@@ -1,1 +1,6 @@
+0 2 1
 [{'name': 'StatefulPartitionedCall:0', 'index': 407, 'shape': array([    1, 10647,    10]), 'shape_signature': array([    1, 10647,    10]), 'dtype': <class 'numpy.uint8'>, 'quantization': (0.011878353543579578, 0), 'quantization_parameters': {'scales': array([0.01187835], dtype=float32), 'zero_points': array([0]), 'quantized_dimension': 0}, 'sparsity_parameters': {}}]
+Traceback (most recent call last):
+  File "/home/pi/Desktop/tflite1/TFLite_detection_webcam.py", line 198, in <module>
+    classes = interpreter.get_tensor(output_details[classes_idx]['index'])[0] # Class index of detected objects
+IndexError: list index out of range
