@@ -1,12 +1,2 @@
-[{'name': 'StatefulPartitionedCall:0', 'index': 525, 'shape': array([    1, 10647,    10]), 'shape_signature': array([    1, 10647,    10]), 'dtype': <class 'numpy.uint8'>, 'quantization': (0.003935534507036209, 0), 'quantization_parameters': {'scales': array([0.00393553], dtype=float32), 'zero_points': array([0]), 'quantized_dimension': 0}, 'sparsity_parameters': {}}]
-[{'name': 'StatefulPartitionedCall:0', 'index': 525, 'shape': array([    1, 10647,    10]), 'shape_signature': array([    1, 10647,    10]), 'dtype': <class 'numpy.uint8'>, 'quantization': (0.003935534507036209, 0), 'quantization_parameters': {'scales': array([0.00393553], dtype=float32), 'zero_points': array([0]), 'quantized_dimension': 0}, 'sparsity_parameters': {}}]
-Traceback (most recent call last):
-  File "/home/pi/Desktop/lasthop/detect.py", line 89, in <module>
-    main()
-  File "/home/pi/Desktop/lasthop/detect.py", line 69, in main
-    res = detect_objects(interpreter, img, 0.8)
-  File "/home/pi/Desktop/lasthop/detect.py", line 44, in detect_objects
-    classes = get_output_tensor(interpreter, 1)
-  File "/home/pi/Desktop/lasthop/detect.py", line 33, in get_output_tensor
-    output_details = interpreter.get_output_details()[index]
-IndexError: list index out of range
+[{'name': 'TFLite_Detection_PostProcess', 'index': 167, 'shape': array([ 1, 10,  4]), 'shape_signature': array([ 1, 10,  4]), 'dtype': <class 'numpy.float32'>, 'quantization': (0.0, 0), 'quantization_parameters': {'scales': array([], dtype=float32), 'zero_points': array([], dtype=int32), 'quantized_dimension': 0}, 'sparsity_parameters': {}}, {'name': 'TFLite_Detection_PostProcess:1', 'index': 168, 'shape': array([ 1, 10]), 'shape_signature': array([ 1, 10]), 'dtype': <class 'numpy.float32'>, 'quantization': (0.0, 0), 'quantization_parameters': {'scales': array([], dtype=float32), 'zero_points': array([], dtype=int32), 'quantized_dimension': 0}, 'sparsity_parameters': {}}, {'name': 'TFLite_Detection_PostProcess:2', 'index': 169, 'shape': array([ 1, 10]), 'shape_signature': array([ 1, 10]), 'dtype': <class 'numpy.float32'>, 'quantization': (0.0, 0), 'quantization_parameters': {'scales': array([], dtype=float32), 'zero_points': array([], dtype=int32), 'quantized_dimension': 0}, 'sparsity_parameters': {}}, {'name': 'TFLite_Detection_PostProcess:3', 'index': 170, 'shape': array([1]), 'shape_signature': array([1]), 'dtype': <class 'numpy.float32'>, 'quantization': (0.0, 0), 'quantization_parameters': {'scales': array([], dtype=float32), 'zero_points': array([], dtype=int32), 'quantized_dimension': 0}, 'sparsity_parameters': {}}]
+Boxes: TFLite_Detection_PostProcess
