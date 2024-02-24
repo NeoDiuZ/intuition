@@ -1,51 +1,41 @@
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import RPi.GPIO as GPIO
 import time
-from picamera import PiCamera
-from PIL import Image
-import numpy as np
 
-# Set up GPIO
-GPIO.setmode(GPIO.BOARD)
-LED_PIN = 11  # Assuming the LED is connected to GPIO pin 11
+# Define GPIO pin for LED
+LED_PIN = 18
+
+# Initialize GPIO
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
-# Load the pre-trained model for person detection
-model = tf.saved_model.load('path_to_your_model')
+# Load TensorFlow Lite model
+interpreter = tflite.Interpreter(model_path="person_detection_model.tflite")
+interpreter.allocate_tensors()
 
-# Define the labels
-LABELS = ['person']
+# Get input and output tensors
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 
-# Function to detect person using TensorFlow model
-def detect_person(image):
-    input_tensor = tf.convert_to_tensor(image)
-    input_tensor = input_tensor[tf.newaxis,...]
+# Function to perform inference and control LED
+def detect_person_and_blink(input_data):
+    # Perform inference
+    interpreter.set_tensor(input_details[0]['index'], input_data)
+    interpreter.invoke()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
 
-    detections = model(input_tensor)
+    # Check if person is detected
+    if output_data[0][1] > 0.5:  # Assuming index 1 corresponds to person class
+        # Blink the LED
+        GPIO.output(LED_PIN, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(LED_PIN, GPIO.LOW)
 
-    for i in range(detections['num_detections']):
-        class_id = int(detections['detection_classes'][0][i])
-        if LABELS[class_id-1] == 'person' and detections['detection_scores'][0][i] > 0.5:
-            return True
-    return False
+# Sample input data (replace with your actual input data)
+sample_input_data = ...  # Your input data for inference
 
-# Main function for blinking LED when person is detected
-def main():
-    camera = PiCamera()
-    camera.resolution = (640, 480)
+# Call the function with the sample input data
+detect_person_and_blink(sample_input_data)
 
-    while True:
-        image = np.empty((480, 640, 3), dtype=np.uint8)
-        camera.capture(image, 'rgb')
-        if detect_person(image):
-            GPIO.output(LED_PIN, GPIO.HIGH)  # Turn on LED
-            time.sleep(1)  # LED on for 1 second
-            GPIO.output(LED_PIN, GPIO.LOW)  # Turn off LED
-        else:
-            time.sleep(1)  # If no person detected, wait for 1 second before checking again
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        GPIO.cleanup()  # Clean up GPIO on Ctrl+C exit
+# Cleanup GPIO
+GPIO.cleanup()
