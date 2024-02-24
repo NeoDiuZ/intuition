@@ -26,20 +26,19 @@ def set_input_tensor(interpreter, image):
     input_tensor = interpreter.tensor(tensor_index)()[0]
     input_tensor[:, :, :] = np.expand_dims((image-255)/255, axis=0)
 
-def get_output_tensor(interpreter, index):
-    """Returns the output tensor at the given index."""
-    output_details = interpreter.get_output_details()[index]
-    tensor = np.squeeze(interpreter.get_tensor(output_details['index']))
-    return tensor
+def get_output_tensors(interpreter):
+    """Returns the output tensors."""
+    output_details = interpreter.get_output_details()
+    output_tensors = [np.squeeze(interpreter.get_tensor(detail['index'])) for detail in output_details]
+    return output_tensors
 
 def detect_objects(interpreter, image, threshold):
     """Returns a list of detection results, each a dictionary of object info."""
     set_input_tensor(interpreter, image)
     interpreter.invoke()
-    # Get all output details
-    boxes = get_output_tensor(interpreter, 0)
-    classes = get_output_tensor(interpreter, 1)
-    scores = get_output_tensor(interpreter, 2)
+    # Get output tensors
+    output_tensors = get_output_tensors(interpreter)
+    boxes, classes, scores = output_tensors
 
     results = []
     for i in range(boxes.shape[0]):
