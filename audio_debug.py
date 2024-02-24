@@ -22,7 +22,7 @@ import sys
 import time
 from threading import Thread
 import importlib.util
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 import pygame
 
 # Define VideoStream class to handle streaming of video from webcam in separate processing thread
@@ -92,9 +92,11 @@ resW, resH = args.resolution.split('x')
 imW, imH = int(resW), int(resH)
 use_TPU = args.edgetpu
 
-pygame.mixer.init()
-
-pygame.mixer.music.load('/home/pi/Downloads/VoiceText.mp3')
+def play_music(file):
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.play()
     
 # Import TensorFlow libraries
 # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
@@ -223,7 +225,7 @@ while True:
             cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
 
     if int(classes[i]) == labels.index('person'):
-        pygame.mixer.music.play()
+        play_music('/home/pi/Downloads/VoiceText.mp3')
     # Draw framerate in corner of frame
     cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
 
@@ -242,3 +244,5 @@ while True:
 # Clean up
 cv2.destroyAllWindows()
 videostream.stop()
+
+
