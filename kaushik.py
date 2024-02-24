@@ -155,9 +155,11 @@ input_std = 127.5
 outname = output_details[0]['name']
 
 if ('StatefulPartitionedCall' in outname): # This is a TF2 model
-    boxes_idx, classes_idx, scores_idx = 1, 3, 0
+    boxes_idx, classes_idx, scores_idx = 0, 2, 1
 else: # This is a TF1 model
-    boxes_idx, classes_idx, scores_idx = 0, 1, 2
+    boxes_idx, classes_idx, scores_idx = 0, 2, 1
+    
+print(boxes_idx, classes_idx, scores_idx)
 
 # Initialize frame rate calculation
 frame_rate_calc = 1
@@ -190,13 +192,15 @@ while True:
     interpreter.set_tensor(input_details[0]['index'],input_data)
     interpreter.invoke()
 
+    print(output_details)
     # Retrieve detection results
     boxes = interpreter.get_tensor(output_details[boxes_idx]['index'])[0] # Bounding box coordinates of detected objects
     classes = interpreter.get_tensor(output_details[classes_idx]['index'])[0] # Class index of detected objects
     scores = interpreter.get_tensor(output_details[scores_idx]['index'])[0] # Confidence of detected objects
 
+    print(classes)
     # Loop over all detections and draw detection box if confidence is above minimum threshold
-    for i in range(len(scores)):
+    for i in range(min(len(scores), len(boxes), len(classes))):
         if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
 
             # Get bounding box coordinates and draw box
@@ -207,9 +211,8 @@ while True:
             xmax = int(min(imW,(boxes[i][3] * imW)))
             
             cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
-
-            # Draw label
-            object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
+            
+            object_name = labels[int(classes[i])] if int(classes[i]) < len(labels) else 'unknown' # Look up object name from "labels" array using class index
             label = '%s: %d%%' % (object_name, int(scores[i]*100)) # Example: 'person: 72%'
             labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
             label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
