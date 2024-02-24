@@ -1,0 +1,1 @@
+[{'name': 'StatefulPartitionedCall:0', 'index': 407, 'shape': array([    1, 10647,    10]), 'shape_signature': array([    1, 10647,    10]), 'dtype': <class 'numpy.uint8'>, 'quantization': (0.011878353543579578, 0), 'quantization_parameters': {'scales': array([0.01187835], dtype=float32), 'zero_points': array([0]), 'quantized_dimension': 0}, 'sparsity_parameters': {}}]
